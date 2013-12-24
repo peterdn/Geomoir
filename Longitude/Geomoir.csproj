@@ -7,7 +7,7 @@
     <ProjectGuid>{9C9F0255-5C12-4ADA-96BA-5E1AC834E79D}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Longitude</RootNamespace>
+    <RootNamespace>Geomoir</RootNamespace>
     <AssemblyName>Longitude</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
@@ -124,7 +124,7 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="Keys.xaml.example" />
-    <None Include="Longitude_TemporaryKey.pfx" />
+    <None Include="Geomoir_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.scale-100.png" />

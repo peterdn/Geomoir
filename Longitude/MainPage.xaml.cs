@@ -1,14 +1,13 @@
-﻿using System;
+﻿// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+using System;
 using Windows.Data.Json;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 using Bing.Maps;
 
-namespace Longitude
+namespace Geomoir
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
