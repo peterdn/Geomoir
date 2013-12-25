@@ -1,6 +1,7 @@
 ﻿// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Store;
 using Windows.Data.Json;
@@ -9,6 +10,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Bing.Maps;
+using SQLite;
 
 namespace Geomoir
 {
@@ -79,6 +81,27 @@ namespace Geomoir
                 var accuracy = (int)location["accuracy"].GetNumber();
 
                 db.Insert(new Models.Location { Latitude = latitude, Longitude = longitude, Timestamp = timestampMs, Accuracy = accuracy });
+            }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            var app = (App) Application.Current;
+            using (var db = new SQLite.SQLiteConnection(app.DatabasePath))
+            {
+                var query = db.Table<Models.Location>().OrderBy(x => x.Timestamp).ToArray();
+                var line = new MapPolyline();
+                var step = 20;
+                for (var i = 0; i < query.Length; i += step)
+                {
+                    var location = query[i];
+                    line.Locations.Add(new Location(location.Latitude, location.Longitude));
+                }
+
+                var shapeLayer = new MapShapeLayer();
+                shapeLayer.Shapes.Add(line);
+
+                myMap.ShapeLayers.Add(shapeLayer);
             }
         }
     }
