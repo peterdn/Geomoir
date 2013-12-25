@@ -1,5 +1,8 @@
 ﻿// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Store;
 using Windows.Data.Json;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -19,9 +22,9 @@ namespace Geomoir
             this.InitializeComponent();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void ButtonBase_OnClick(object Sender, RoutedEventArgs E)
         {
-            var picker = new FileOpenPicker {SuggestedStartLocation = PickerLocationId.Desktop};
+            var picker = new FileOpenPicker { SuggestedStartLocation = PickerLocationId.Desktop };
             picker.FileTypeFilter.Add(".json");
             var storageFile = await picker.PickSingleFileAsync();
             if (storageFile == null)
@@ -30,7 +33,6 @@ namespace Geomoir
             }
 
             importProgressBar.Visibility = Visibility.Visible;
-            importButton.IsEnabled = false;
             importProgressText.Text = "Loading...";
 
             var text = await FileIO.ReadTextAsync(storageFile);
@@ -42,25 +44,42 @@ namespace Geomoir
             }
 
             var locations = jsonObject["locations"].GetArray();
-            var line = new MapPolyline();
 
-            for (var i = 0; i < locations.Count; i += 20)
-            {                
-                var location = locations[i].GetObject();
-                var latitude = location["latitudeE7"].GetNumber() / 1e7;
-                var longitude = location["longitudeE7"].GetNumber() / 1e7;
+            importProgressBar.Maximum = locations.Count;
+            importProgressBar.Value = 0;
 
-                line.Locations.Add(new Location(latitude, longitude));
+            var app = (App) Application.Current;
+            using (var db = new SQLite.SQLiteConnection(app.DatabasePath))
+            {
+                var step = 1;
+                var count = 1000;
+                for (var i = 0; i < locations.Count; i += step * count)
+                {
+                    db.BeginTransaction();
+                    var i1 = i;
+                    await Task.Run(() => AddLocationsToDatabase(db, locations, i1, count, step));
+                    db.Commit();
+                    importProgressText.Text = string.Format("Imported {0} of {1}", i, locations.Count);
+                    importProgressBar.Value += step * count;
+                }
             }
-
-            var shapeLayer = new MapShapeLayer();
-            shapeLayer.Shapes.Add(line);
-
-            myMap.ShapeLayers.Add(shapeLayer);
 
             importProgressBar.Visibility = Visibility.Collapsed;
             importProgressText.Text = "";
-            importButton.IsEnabled = true;
+        }
+
+        private void AddLocationsToDatabase(SQLite.SQLiteConnection db, JsonArray locations, int start, int count, int step)
+        {
+            for (var i = start; i < start + count && i < locations.Count; i += step)
+            {
+                var location = locations[i].GetObject();
+                var latitude = location["latitudeE7"].GetNumber() / 1e7;
+                var longitude = location["longitudeE7"].GetNumber() / 1e7;
+                var timestampMs = long.Parse(location["timestampMs"].GetString());
+                var accuracy = (int)location["accuracy"].GetNumber();
+
+                db.Insert(new Models.Location { Latitude = latitude, Longitude = longitude, Timestamp = timestampMs, Accuracy = accuracy });
+            }
         }
     }
 }

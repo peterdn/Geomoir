@@ -9,9 +9,14 @@
     xmlns:bm="using:Bing.Maps">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="importButton" Content="Import Latitude Data" HorizontalAlignment="Left" Margin="48,45,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-        <bm:Map Credentials="{StaticResource BingMapsApiKey}" x:Name="myMap" Margin="51,86,80,56"></bm:Map>
-        <ProgressBar x:Name="importProgressBar" HorizontalAlignment="Left" Height="32" Margin="498,48,0,0" VerticalAlignment="Top" Width="788" IsIndeterminate="True" Visibility="Collapsed"/>
-        <TextBlock x:Name="importProgressText" HorizontalAlignment="Left" Margin="239,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="32" Width="239"/>
+        <bm:Map Credentials="{StaticResource BingMapsApiKey}" x:Name="myMap" Margin="0"></bm:Map>
+        <ProgressBar x:Name="importProgressBar" HorizontalAlignment="Left" Height="32" Margin="498,48,0,0" VerticalAlignment="Top" Width="788" Visibility="Collapsed"/>
+        <TextBlock x:Name="importProgressText" HorizontalAlignment="Left" Margin="239,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="32" Width="239" Foreground="Black" FontSize="18"/>
     </Grid>
+    
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Import" Icon="Import" Click="ButtonBase_OnClick"></AppBarButton>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

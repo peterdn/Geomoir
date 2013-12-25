@@ -16,6 +16,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
+using Geomoir.Models;
+using SQLite;
 
 namespace Geomoir
 {
@@ -24,6 +26,14 @@ namespace Geomoir
     /// </summary>
     sealed partial class App : Application
     {
+        public string DatabasePath
+        {
+            get
+            {
+                return Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "locations.db");
+            }
+        }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -48,6 +58,12 @@ namespace Geomoir
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+
+            using (var db = new SQLiteConnection(DatabasePath))
+            {
+                // Create SQLite database if it hasn't already been created.
+                db.CreateTable<Location>();
+            }
 
             Frame rootFrame = Window.Current.Content as Frame;
 
