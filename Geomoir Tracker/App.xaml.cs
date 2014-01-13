@@ -1,22 +1,33 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using Geomoir.Models;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Geomoir_Tracker.Resources;
+using SQLite;
 
 namespace Geomoir_Tracker
 {
-    public partial class App : Application
+    public partial class App
     {
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        public string DatabasePath
+        {
+            get
+            {
+                return Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "locations.db");
+            }
+        }
 
         /// <summary>
         /// Constructor for the Application object.
@@ -61,6 +72,11 @@ namespace Geomoir_Tracker
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            // Create SQLite database if it does not already exist
+            using (var db = new SQLiteConnection(DatabasePath))
+            {
+                db.CreateTable<Location>();
+            }
         }
 
         // Code to execute when the application is activated (brought to foreground)

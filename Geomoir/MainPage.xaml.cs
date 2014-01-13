@@ -1,9 +1,7 @@
 ﻿// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Store;
 using Windows.Data.Json;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -17,7 +15,7 @@ namespace Geomoir
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage
     {
         public MainPage()
         {
@@ -51,7 +49,7 @@ namespace Geomoir
             importProgressBar.Value = 0;
 
             var app = (App) Application.Current;
-            using (var db = new SQLite.SQLiteConnection(app.DatabasePath))
+            using (var db = new SQLiteConnection(app.DatabasePath))
             {
                 var step = 1;
                 var count = 1000;
@@ -70,7 +68,7 @@ namespace Geomoir
             importProgressText.Text = "";
         }
 
-        private void AddLocationsToDatabase(SQLite.SQLiteConnection db, JsonArray locations, int start, int count, int step)
+        private void AddLocationsToDatabase(SQLiteConnection db, JsonArray locations, int start, int count, int step)
         {
             for (var i = start; i < start + count && i < locations.Count; i += step)
             {
@@ -87,7 +85,7 @@ namespace Geomoir
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             var app = (App) Application.Current;
-            using (var db = new SQLite.SQLiteConnection(app.DatabasePath))
+            using (var db = new SQLiteConnection(app.DatabasePath))
             {
                 var query = db.Table<Models.Location>().OrderBy(x => x.Timestamp).ToArray();
                 var line = new MapPolyline();

@@ -46,6 +46,9 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Button x:Name="addLocationButton" Content="Add current location to SQLite" HorizontalAlignment="Left" VerticalAlignment="Top" Click="AddLocationButton_Click"/>
+            <Button x:Name="readLocationsButton" Content="Read locations from SQLite" HorizontalAlignment="Left" Margin="0,72,0,0" VerticalAlignment="Top" Click="readLocationsButton_Click"/>
+            <TextBlock x:Name="databasePathTextBlock" HorizontalAlignment="Left" Margin="10,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
         </Grid>
 

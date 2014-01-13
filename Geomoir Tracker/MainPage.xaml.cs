@@ -1,41 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Device.Location;
 using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using Geomoir_Tracker.Resources;
+using Windows.Devices.Geolocation;
+using Geomoir.Models;
+using SQLite;
 
 namespace Geomoir_Tracker
 {
-    public partial class MainPage : PhoneApplicationPage
+    public partial class MainPage
     {
         // Constructor
         public MainPage()
         {
             InitializeComponent();
+            
+            var app = (App)Application.Current;
 
-            // Sample code to localize the ApplicationBar
-            //BuildLocalizedApplicationBar();
+            databasePathTextBlock.Text = app.DatabasePath;
         }
 
-        // Sample code for building a localized ApplicationBar
-        //private void BuildLocalizedApplicationBar()
-        //{
-        //    // Set the page's ApplicationBar to a new instance of ApplicationBar.
-        //    ApplicationBar = new ApplicationBar();
+        private async void AddLocationButton_Click(object Sender, RoutedEventArgs Args)
+        {
+            var app = (App)Application.Current;
 
-        //    // Create a new button and set the text value to the localized string from AppResources.
-        //    ApplicationBarIconButton appBarButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/appbar.add.rest.png", UriKind.Relative));
-        //    appBarButton.Text = AppResources.AppBarButtonText;
-        //    ApplicationBar.Buttons.Add(appBarButton);
+            var geolocater = new Geolocator();
 
-        //    // Create a new menu item with the localized string from AppResources.
-        //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
-        //    ApplicationBar.MenuItems.Add(appBarMenuItem);
-        //}
+            var geoposition = await geolocater.GetGeopositionAsync();
+
+            var location = new Location();
+            location.Latitude = geoposition.Coordinate.Latitude;
+            location.Longitude = geoposition.Coordinate.Longitude;
+
+            location.Timestamp = DateTime.Now.ToUnixTimestampMS();
+
+            // TODO: check accuracies here mean the same thing
+            location.Accuracy = (int)geoposition.Coordinate.Accuracy;
+
+            using (var db = new SQLiteConnection(app.DatabasePath))
+            {
+                db.Insert(location);
+            }
+        }
+
+        private void readLocationsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var app = (App)Application.Current;
+
+            using (var db = new SQLiteConnection(app.DatabasePath))
+            {
+                var query = db.Table<Location>().OrderBy(x => x.Timestamp).ToArray();
+
+                databasePathTextBlock.Text = string.Format("Got {0} locations!", query.Length);
+            }
+        }
     }
 }
