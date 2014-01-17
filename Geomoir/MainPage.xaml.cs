@@ -17,12 +17,32 @@ namespace Geomoir
     /// </summary>
     public sealed partial class MainPage
     {
+        private BluetoothServer _bluetoothServer;
+
         public MainPage()
         {
             this.InitializeComponent();
         }
 
-        private async void ButtonBase_OnClick(object Sender, RoutedEventArgs E)
+        private void ButtonBase_OnClick(object Sender, RoutedEventArgs E)
+        {
+            if (Sender == ImportAppBarButton)
+            {
+                Import();
+            }
+            else if (Sender == StartBluetoothAppBarButton)
+            {
+                StartBluetooth();
+            }
+        }
+
+        private async void StartBluetooth()
+        {
+            _bluetoothServer = new BluetoothServer();
+            _bluetoothServer.Start();
+        }
+
+        private async void Import()
         {
             var picker = new FileOpenPicker { SuggestedStartLocation = PickerLocationId.Desktop };
             picker.FileTypeFilter.Add(".json");
@@ -48,7 +68,7 @@ namespace Geomoir
             importProgressBar.Maximum = locations.Count;
             importProgressBar.Value = 0;
 
-            var app = (App) Application.Current;
+            var app = (App)Application.Current;
             using (var db = new SQLiteConnection(app.DatabasePath))
             {
                 var step = 1;

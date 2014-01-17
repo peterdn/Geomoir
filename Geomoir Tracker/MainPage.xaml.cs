@@ -44,7 +44,7 @@ namespace Geomoir_Tracker
             }
         }
 
-        private void readLocationsButton_Click(object sender, RoutedEventArgs e)
+        private void readLocationsButton_Click(object Sender, RoutedEventArgs Args)
         {
             var app = (App)Application.Current;
 
@@ -54,6 +54,12 @@ namespace Geomoir_Tracker
 
                 databasePathTextBlock.Text = string.Format("Got {0} locations!", query.Length);
             }
+        }
+
+        private void SyncBluetoothButton_Click(object Sender, RoutedEventArgs Args)
+        {
+            var client = new BluetoothClient();
+            client.Connect();
         }
     }
 }

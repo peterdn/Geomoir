@@ -16,7 +16,8 @@
     
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="Import" Icon="Import" Click="ButtonBase_OnClick"></AppBarButton>
+            <AppBarButton Name="ImportAppBarButton" Label="Import" Icon="Import" Click="ButtonBase_OnClick"></AppBarButton>
+            <AppBarButton Name="StartBluetoothAppBarButton" Label="Start Bluetooth Server" Click="ButtonBase_OnClick"></AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
 </Page>
