@@ -159,3 +159,5 @@ $RECYCLE.BIN/
 
 # API Keys
 Geomoir/Keys.xaml
+/packages
+/SQLite WP8/.gitattributes

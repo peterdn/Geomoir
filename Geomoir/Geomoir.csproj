@@ -120,7 +120,6 @@
     <Compile Include="Bluetooth\BluetoothDevice.cs" />
     <Compile Include="Bluetooth\BluetoothDuplexConnection.cs" />
     <Compile Include="Bluetooth\BluetoothServer.cs" />
-    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
