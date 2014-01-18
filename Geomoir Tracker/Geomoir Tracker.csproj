@@ -90,6 +90,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Geomoir\Bluetooth\BluetoothDuplexConnection.cs">
+      <Link>Bluetooth\BluetoothDuplexConnection.cs</Link>
+    </Compile>
     <Compile Include="..\Geomoir\Models\Location.cs">
       <Link>Models\Location.cs</Link>
     </Compile>

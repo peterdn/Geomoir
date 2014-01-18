@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Navigation;
 using Windows.Devices.Geolocation;
+using Geomoir.Bluetooth;
 using Geomoir.Models;
 using SQLite;
 
@@ -56,10 +57,16 @@ namespace Geomoir_Tracker
             }
         }
 
-        private void SyncBluetoothButton_Click(object Sender, RoutedEventArgs Args)
+        private async void SyncBluetoothButton_Click(object Sender, RoutedEventArgs Args)
         {
             var client = new BluetoothClient();
-            client.Connect();
+            client.ConnectionEstablished += ClientOnConnectionEstablished;
+            await client.Connect();
+        }
+
+        private async void ClientOnConnectionEstablished(BluetoothClient Client, BluetoothDuplexConnection Connection)
+        {
+            await Connection.SendString("Hello Geomoir!");
         }
     }
 }

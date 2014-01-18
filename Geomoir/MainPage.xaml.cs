@@ -2,12 +2,16 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Data.Json;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Bing.Maps;
+using Geomoir.Bluetooth;
 using SQLite;
 
 namespace Geomoir
@@ -17,11 +21,47 @@ namespace Geomoir
     /// </summary>
     public sealed partial class MainPage
     {
-        private BluetoothServer _bluetoothServer;
+        public static readonly Guid ServiceGUID = Guid.Parse("EEB35C6F-33DB-4DE3-8B4E-CFA313E92640");
+
+        private readonly BluetoothServer _bluetoothServer;
 
         public MainPage()
         {
             this.InitializeComponent();
+            _bluetoothServer = new BluetoothServer(ServiceGUID);
+            _bluetoothServer.StateChanged += BluetoothServerOnStateChanged;
+            _bluetoothServer.ClientConnected += BluetoothServerOnClientConnected;
+        }
+
+        private async void BluetoothServerOnClientConnected(BluetoothServer Server, ClientConnectedEventArgs Args)
+        {
+            var device = Args.Device;
+
+            SafeInvoke(() => {
+                LogTextBlock.Text = string.Format("Connected to {0} hostname {1} service {2}", device.DisplayName, device.HostName, device.ServiceName);
+            });
+
+            var connection = Args.Connection;
+            var data = await connection.ReceiveString();
+
+            SafeInvoke(() => {
+                LogTextBlock.Text += "\n\r" + data;
+            });
+        }
+
+        private void BluetoothServerOnStateChanged(BluetoothServer Server, BluetoothServer.BluetoothServerState ServerState)
+        {
+            SafeInvoke(() => {
+                ServerStatusTextBlock.Text = ServerState.ToString();
+                if (ServerState == BluetoothServer.BluetoothServerState.Advertising || ServerState == BluetoothServer.BluetoothServerState.Connected)
+                {
+                    ToggleServerButton.Content = "Start Bluetooth server";
+                }
+                else
+                {
+                    ToggleServerButton.Content = "Stop Bluetooth server";
+                }
+            });
         }
 
         private void ButtonBase_OnClick(object Sender, RoutedEventArgs E)
@@ -32,14 +72,8 @@ namespace Geomoir
             }
             else if (Sender == StartBluetoothAppBarButton)
             {
-                StartBluetooth();
+                //StartBluetooth();
             }
-        }
-
-        private async void StartBluetooth()
-        {
-            _bluetoothServer = new BluetoothServer();
-            _bluetoothServer.Start();
         }
 
         private async void Import()
@@ -120,6 +154,30 @@ namespace Geomoir
                 shapeLayer.Shapes.Add(line);
 
                 myMap.ShapeLayers.Add(shapeLayer);
+            }
+        }
+
+        private async void ToggleServerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bluetoothServer.ServerState == BluetoothServer.BluetoothServerState.Connected || _bluetoothServer.ServerState == BluetoothServer.BluetoothServerState.Advertising)
+            {
+                _bluetoothServer.Stop();
+            }
+            else
+            {
+                await _bluetoothServer.Start();
+            }
+        }
+
+        public async static void SafeInvoke(Action Invokee)
+        {
+            if (CoreApplication.MainView.CoreWindow.Dispatcher.HasThreadAccess)
+            {
+                Invokee();
+            }
+            else
+            {
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Invokee());
             }
         }
     }
