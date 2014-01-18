@@ -9,9 +9,12 @@
     xmlns:bm="using:Bing.Maps" Loaded="Page_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <bm:Map Credentials="{StaticResource BingMapsApiKey}" x:Name="myMap" Margin="0"></bm:Map>
+        <bm:Map Credentials="{StaticResource BingMapsApiKey}" x:Name="myMap" Margin="239,0,0,0"></bm:Map>
         <ProgressBar x:Name="importProgressBar" HorizontalAlignment="Left" Height="32" Margin="498,48,0,0" VerticalAlignment="Top" Width="788" Visibility="Collapsed"/>
         <TextBlock x:Name="importProgressText" HorizontalAlignment="Left" Margin="239,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="32" Width="239" Foreground="Black" FontSize="18"/>
+        <Button x:Name="ToggleServerButton" Content="Start Bluetooth server" HorizontalAlignment="Left" Margin="7,7,0,0" VerticalAlignment="Top" Click="ToggleServerButton_Click"/>
+        <TextBlock x:Name="ServerStatusTextBlock" HorizontalAlignment="Left" Margin="10,48,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top" FontSize="36"/>
+        <TextBlock x:Name="LogTextBlock" HorizontalAlignment="Left" Margin="10,135,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="224" FontSize="24"/>
     </Grid>
     
     <Page.BottomAppBar>
