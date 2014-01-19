@@ -169,23 +169,6 @@ namespace Geomoir.Bluetooth
                 throw new InvalidOperationException("Server is not connected");
             }
         }
-
-        private async void Sync(StreamSocket Socket)
-        {
-            if (Socket != null)
-            {
-                var reader = new DataReader(Socket.InputStream);
-
-                var read = await reader.LoadAsync(sizeof (UInt32));
-                var dataLength = reader.ReadUInt32();
-
-                read = await reader.LoadAsync(dataLength);
-                var data = reader.ReadString(dataLength);
-
-                reader.Dispose();
-                Socket.Dispose();
-            }
-        }
     }
 
     internal class StateChangedEventArgs

@@ -42,10 +42,10 @@ namespace Geomoir
             });
 
             var connection = Args.Connection;
-            var data = await connection.ReceiveString();
+            var data = await connection.ReceiveObject<Models.Location>();
 
             SafeInvoke(() => {
-                LogTextBlock.Text += "\n\r" + data;
+                LogTextBlock.Text += "\n\r" + data.Timestamp;
             });
         }
 

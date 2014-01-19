@@ -66,7 +66,9 @@ namespace Geomoir_Tracker
 
         private async void ClientOnConnectionEstablished(BluetoothClient Client, BluetoothDuplexConnection Connection)
         {
-            await Connection.SendString("Hello Geomoir!");
+            var location = new Location();
+            location.Timestamp = 398394834;
+            await Connection.SendObject<Location>(location);
         }
     }
 }
