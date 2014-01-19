@@ -22,6 +22,7 @@
   </Applications>
   <Capabilities>
     <Capability Name="privateNetworkClientServer" />
+    <Capability Name="internetClient" />
     <m2:DeviceCapability Name="bluetooth.rfcomm">
       <m2:Device Id="any">
         <m2:Function Type="serviceId:EEB35C6F-33DB-4DE3-8B4E-CFA313E92640" />
