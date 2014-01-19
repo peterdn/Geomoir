@@ -25,19 +25,32 @@ namespace Geomoir
 
         private readonly BluetoothServer _bluetoothServer;
 
+        private DuplexConnection _connection;
+
         public MainPage()
         {
             this.InitializeComponent();
             _bluetoothServer = new BluetoothServer(ServiceGUID);
             _bluetoothServer.StateChanged += BluetoothServerOnStateChanged;
             _bluetoothServer.ClientConnected += BluetoothServerOnClientConnected;
+            _bluetoothServer.ConnectionError += BluetoothServerOnConnectionError;
+        }
+
+        private void BluetoothServerOnConnectionError(BluetoothServer Sender, Exception Args)
+        {
+            SafeInvoke(() => {
+                LogTextBlock.Text = "Error: " + Args.Message;
+            });
         }
 
         private async void BluetoothServerOnClientConnected(BluetoothServer Server, ClientConnectedEventArgs Args)
         {
             var device = Args.Device;
 
+            _connection = Args.Connection;
+
             SafeInvoke(() => {
+                SendMessageButton.Visibility = Visibility.Visible;
                 LogTextBlock.Text = string.Format("Connected to {0} hostname {1} service {2}", device.DisplayName, device.HostName, device.ServiceName);
             });
 
@@ -179,6 +192,11 @@ namespace Geomoir
             {
                 await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Invokee());
             }
+        }
+
+        private void SendMessageButton_Click(object Sender, RoutedEventArgs Args)
+        {
+            _connection.SendString("Oh hi again");
         }
     }
 }

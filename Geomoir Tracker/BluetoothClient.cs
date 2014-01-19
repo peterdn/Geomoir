@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Networking.Proximity;
 using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
 using Geomoir.Bluetooth;
 
 namespace Geomoir_Tracker
 {
     class BluetoothClient
     {
-        public event TypedEventHandler<BluetoothClient, BluetoothDuplexConnection> ConnectionEstablished; 
+        public event TypedEventHandler<BluetoothClient, ClientConnectedEventArgs> ConnectionEstablished; 
         
         public static readonly Guid ServiceGUID = Guid.Parse("EEB35C6F-33DB-4DE3-8B4E-CFA313E92640");
         
@@ -19,7 +18,7 @@ namespace Geomoir_Tracker
         {
             get
             {
-                return "{" + ServiceGUID.ToString() + "}";
+                return "{" + ServiceGUID + "}";
             }
         }
 
@@ -45,23 +44,12 @@ namespace Geomoir_Tracker
                     await socket.ConnectAsync(peer.HostName, ServiceName);
 
                     var connection = new BluetoothDuplexConnection(socket);
+                    var device = new BluetoothDevice(peer.DisplayName, peer.HostName, peer.ServiceName);
 
                     if (ConnectionEstablished != null)
                     {
-                        ConnectionEstablished(this, connection);
+                        ConnectionEstablished(this, new ClientConnectedEventArgs(device, connection));
                     }
-
-                    //var writer = new DataWriter(socket.OutputStream);
-                    //var reader = new DataReader(socket.InputStream);
-
-                    //var data = "hello";
-
-                    //writer.WriteUInt32((uint)data.Length);
-                    //writer.WriteString(data);
-                    //await writer.StoreAsync();
-
-                    //writer.Dispose();
-
                 } 
                 catch (Exception ex)
                 {
