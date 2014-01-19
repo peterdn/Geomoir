@@ -93,11 +93,11 @@
     <Compile Include="..\Geomoir\Bluetooth\BluetoothDevice.cs">
       <Link>Bluetooth\BluetoothDevice.cs</Link>
     </Compile>
-    <Compile Include="..\Geomoir\Bluetooth\BluetoothDuplexConnection.cs">
-      <Link>Bluetooth\BluetoothDuplexConnection.cs</Link>
-    </Compile>
     <Compile Include="..\Geomoir\Bluetooth\ClientConnectedEventArgs.cs">
       <Link>Bluetooth\ClientConnectedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Geomoir\Bluetooth\DuplexConnection.cs">
+      <Link>Bluetooth\DuplexConnection.cs</Link>
     </Compile>
     <Compile Include="..\Geomoir\Models\Location.cs">
       <Link>Models\Location.cs</Link>
@@ -105,7 +105,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BluetoothClient.cs" />
+    <Compile Include="Bluetooth\BluetoothClient.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">

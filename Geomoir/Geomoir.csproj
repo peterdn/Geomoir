@@ -118,7 +118,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bluetooth\BluetoothDevice.cs" />
-    <Compile Include="Bluetooth\BluetoothDuplexConnection.cs" />
+    <Compile Include="Bluetooth\DuplexConnection.cs" />
     <Compile Include="Bluetooth\BluetoothServer.cs" />
     <Compile Include="Bluetooth\ClientConnectedEventArgs.cs" />
     <Compile Include="Bluetooth\Exceptions.cs" />

@@ -43,7 +43,7 @@ namespace Geomoir_Tracker
                     // default service name?
                     await socket.ConnectAsync(peer.HostName, ServiceName);
 
-                    var connection = new BluetoothDuplexConnection(socket);
+                    var connection = new DuplexConnection(socket);
                     var device = new BluetoothDevice(peer.DisplayName, peer.HostName, peer.ServiceName);
 
                     if (ConnectionEstablished != null)
