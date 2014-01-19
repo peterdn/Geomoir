@@ -13,7 +13,7 @@ namespace Geomoir.Bluetooth
     /// Represents a duplex connection.
     /// </summary>
     /// <remarks>
-    /// Uses a very simple message format. A message consists of a header and body. 
+    /// Uses a very simple format for variable-size messages. A message consists of a header and body. 
     /// The message header is a UInt32 that specifies the length of the message body in bytes.
     /// The message body follows and must be the specified length in bytes.
     /// </remarks>
@@ -92,6 +92,29 @@ namespace Geomoir.Bluetooth
         {
             var dataLength = await ReceiveMessage();
             return _reader.ReadString(dataLength);
+        }
+
+        /// <summary>
+        /// Sends a 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="Value">The value to send.</param>
+        /// <returns>The asynchronous request.</returns>
+        public async Task SendUInt32(UInt32 Value)
+        {
+            _writer.WriteUInt32(Value);
+            await _writer.StoreAsync();
+        }
+
+        /// <summary>
+        /// Receives a 32-bit unsigned integer.
+        /// </summary>
+        /// <returns>The asynchronous request.</returns>
+        public async Task<UInt32> ReceiveUInt32()
+        {
+            var bytesRead = await _reader.LoadAsync(sizeof (UInt32));
+            if (bytesRead != sizeof(UInt32)) 
+                throw new EndOfStreamException();
+            return _reader.ReadUInt32();
         }
 
         /// <summary>

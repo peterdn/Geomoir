@@ -50,15 +50,27 @@ namespace Geomoir
             _connection = Args.Connection;
 
             SafeInvoke(() => {
-                SendMessageButton.Visibility = Visibility.Visible;
                 LogTextBlock.Text = string.Format("Connected to {0} hostname {1} service {2}", device.DisplayName, device.HostName, device.ServiceName);
             });
 
             var connection = Args.Connection;
-            var data = await connection.ReceiveObject<Models.Location>();
+            
+            // The number of locations to sync
+            var count = await connection.ReceiveUInt32();
+            
+            var app = (App)Application.Current;
+            using (var db = new SQLiteConnection(app.DatabasePath))
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    var location = await connection.ReceiveObject<Models.Location>();
+                    db.Insert(location);
+                }
+            }
 
-            SafeInvoke(() => {
-                LogTextBlock.Text += "\n\r" + data.Timestamp;
+            SafeInvoke(() =>
+            {
+                LogTextBlock.Text += string.Format("\n\rSynced {0} locations!", count);
             });
         }
 
@@ -151,23 +163,7 @@ namespace Geomoir
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var app = (App) Application.Current;
-            using (var db = new SQLiteConnection(app.DatabasePath))
-            {
-                var query = db.Table<Models.Location>().OrderBy(x => x.Timestamp).ToArray();
-                var line = new MapPolyline();
-                var step = 20;
-                for (var i = 0; i < query.Length; i += step)
-                {
-                    var location = query[i];
-                    line.Locations.Add(new Location(location.Latitude, location.Longitude));
-                }
-
-                var shapeLayer = new MapShapeLayer();
-                shapeLayer.Shapes.Add(line);
-
-                myMap.ShapeLayers.Add(shapeLayer);
-            }
+            
         }
 
         private async void ToggleServerButton_Click(object sender, RoutedEventArgs e)
@@ -194,9 +190,24 @@ namespace Geomoir
             }
         }
 
-        private void SendMessageButton_Click(object Sender, RoutedEventArgs Args)
+        private void PlotLocationsButton_Click(object Sender, RoutedEventArgs Args)
         {
-            _connection.SendString("Oh hi again");
+            var app = (App)Application.Current;
+            using (var db = new SQLiteConnection(app.DatabasePath))
+            {
+                var query = db.Table<Models.Location>().OrderBy(x => x.Timestamp).ToArray();
+                var firstLocation = query.First();
+
+                var location = new Location(firstLocation.Latitude, firstLocation.Longitude);
+
+                var pushpin = new Pushpin();
+
+                myMap.Children.Add(pushpin);
+
+                MapLayer.SetPosition(pushpin, location);
+
+                myMap.SetView(location, 10);
+            }
         }
     }
 }

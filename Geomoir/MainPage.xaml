@@ -15,7 +15,7 @@
         <Button x:Name="ToggleServerButton" Content="Start Bluetooth server" HorizontalAlignment="Left" Margin="7,7,0,0" VerticalAlignment="Top" Click="ToggleServerButton_Click"/>
         <TextBlock x:Name="ServerStatusTextBlock" HorizontalAlignment="Left" Margin="10,129,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top" FontSize="36"/>
         <TextBlock x:Name="LogTextBlock" HorizontalAlignment="Left" Margin="10,177,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="224" FontSize="24"/>
-        <Button x:Name="SendMessageButton" Content="Send Message" HorizontalAlignment="Left" Margin="7,45,0,0" VerticalAlignment="Top" Width="181" Click="SendMessageButton_Click" Visibility="Collapsed"/>
+        <Button x:Name="PlotLocationsButton" Content="Send Message" HorizontalAlignment="Left" Margin="7,45,0,0" VerticalAlignment="Top" Width="181" Click="PlotLocationsButton_Click"/>
     </Grid>
     
     <Page.BottomAppBar>

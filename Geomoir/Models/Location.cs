@@ -2,6 +2,7 @@
 
 namespace Geomoir.Models
 {
+    [DataContract]
     public class Location
     {
         [SQLite.PrimaryKey]

@@ -66,9 +66,23 @@ namespace Geomoir_Tracker
 
         private async void ClientOnConnectionEstablished(BluetoothClient Client, ClientConnectedEventArgs Args)
         {
-            var location = new Location();
-            location.Timestamp = 398394834;
-            await Args.Connection.SendObject(location);
+            var app = (App)Application.Current;
+            var connection = Args.Connection;
+
+            using (var db = new SQLiteConnection(app.DatabasePath))
+            {
+                var query = db.Table<Location>().OrderBy(x => x.Timestamp).ToArray();
+
+                // First send the number of locations we want to send.
+                await connection.SendUInt32((uint)query.Length);
+
+                foreach (var location in query)
+                {
+                    await connection.SendObject(location);
+                }
+            }
+
+            // Disconnect
         }
     }
 }
