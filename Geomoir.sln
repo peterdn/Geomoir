@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geomoir Tracker", "Geomoir 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLite WP8", "SQLite WP8\Sqlite.vcxproj", "{59B35F6C-E062-4F0E-88D8-13F3F82A24F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geomoir.Data", "Geomoir.Data\Geomoir.Data.csproj", "{2E72F876-41B4-49A1-8BCE-630A911AC04D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFileToQuadTree", "ShapeFileToQuadTree\ShapeFileToQuadTree.csproj", "{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +117,42 @@ Global
 		{59B35F6C-E062-4F0E-88D8-13F3F82A24F3}.Release|x64.ActiveCfg = Release|Win32
 		{59B35F6C-E062-4F0E-88D8-13F3F82A24F3}.Release|x86.ActiveCfg = Release|Win32
 		{59B35F6C-E062-4F0E-88D8-13F3F82A24F3}.Release|x86.Build.0 = Release|Win32
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|ARM.Build.0 = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|Win32.ActiveCfg = Release|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|x64.ActiveCfg = Release|Any CPU
+		{2E72F876-41B4-49A1-8BCE-630A911AC04D}.Release|x86.ActiveCfg = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|ARM.Build.0 = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Debug|x86.Build.0 = Debug|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|ARM.ActiveCfg = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|Win32.ActiveCfg = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|x64.ActiveCfg = Release|Any CPU
+		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
