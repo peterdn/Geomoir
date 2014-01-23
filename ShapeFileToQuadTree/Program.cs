@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DotSpatial.Data;
 using DotSpatial.Topology;
@@ -11,41 +12,73 @@ namespace ShapeFileToQuadTree
 {
     class Program
     {
-        private const int DEFAULT_MAX_DEPTH = 13;
-        private const string DEFAULT_OUTFILE_PATH = "quadtree.dat";
+        private const int DEFAULT_MAX_DEPTH = 9;
+        private const string DEFAULT_QUADTREE_OUTFILE_PATH = "quadtree.dat";
+        private const string DEFAULT_COUNTRIES_OUTFILE_PATH = "countries.dat";
 
         static void Main(string[] Args)
         {
-            if (Args.Length == 0 || Args.Length >= 4)
+            if (Args.Length == 0 || Args.Length >= 5)
             {
-                Console.WriteLine("Usage ShapeFuleToQuadTree.exe shapefile.shp [MaxDepth] [quadtree.dat]");
+                Console.WriteLine("Usage ShapeFileToQuadTree.exe shapefile.shp [MaxDepth] [quadtree.dat] [countries.dat]");
                 return;
             }
 
             var shapeFilePath = Args[0];
             var maxDepth = Args.Length > 1 ? int.Parse(Args[1]) : DEFAULT_MAX_DEPTH;
-            var outputFilePath = Args.Length > 2 ? Args[2] : DEFAULT_OUTFILE_PATH;
+            var quadtreeOutputFilePath = Args.Length > 2 ? Args[2] : DEFAULT_QUADTREE_OUTFILE_PATH;
+            var countriesOutputFilePath = Args.Length > 3 ? Args[3] : DEFAULT_COUNTRIES_OUTFILE_PATH;
 
             // Process the country shape file to construct a list
             // of country names and an R-tree of their bounding boxes.
             StRtree rtree;
-            Dictionary<string, int> countries;
-            ProcessShapeFile(shapeFilePath, out rtree, out countries);
+            Dictionary<string, byte> countries;
+
+            try
+            {
+                ProcessShapeFile(shapeFilePath, out rtree, out countries);
+            } 
+            catch (OverflowException)
+            {
+                Console.WriteLine("Ooops! There should not be more than 255 countries!");
+                return;
+            }
 
             // Build a quad tree from the R-tree.
-            var bounds = rtree.Root.Bounds as Envelope;
+            var bounds = (Envelope) rtree.Root.Bounds;
             var qtree = BuildQuadTree(rtree, countries, bounds.Minimum, bounds.Maximum, maxDepth);
 
             // Test on a few random places.
             var countryNames = countries.Keys.ToArray();
             TestOnRandomPlaces(qtree, countryNames);
 
-            Console.WriteLine("Total leafs = {0}", nleafs);
+            Console.WriteLine("Total leafs = {0}", _nleafs);
+
+            // Save the countries dictionary.
+            Console.WriteLine("Saving countries to {0}", countriesOutputFilePath);
+            using (var filestream = new FileStream(countriesOutputFilePath, FileMode.Create))
+            {
+                using (var writer = new StreamWriter(filestream))
+                {
+                    foreach (var countryName in countryNames)
+                        writer.WriteLine(countryName);
+                }
+            }
+
+            // Save the quad tree.
+            Console.WriteLine("Saving quad tree to {0}", quadtreeOutputFilePath);
+            using (var filestream = new FileStream(quadtreeOutputFilePath, FileMode.Create))
+            {
+                using (var writer = new BinaryWriter(filestream))
+                {
+                    qtree.Save(writer);
+                }
+            }
 
             Console.ReadLine();
         }
 
-        private static void TestOnRandomPlaces(QuadTree<int> Qtree, string[] CountryNames)
+        private static void TestOnRandomPlaces(QuadTree<byte> Qtree, string[] CountryNames)
         {
             // Oxford (UK)
             var countryResult = Qtree.Query(new Geomoir.Data.Coordinate(-1.25f, 51.7f));
@@ -88,8 +121,8 @@ namespace ShapeFileToQuadTree
             Console.WriteLine("GOT {0}", CountryNames[countryResult]);
         }
 
-        private static int nleafs = 0;
-        private static QuadTree<int> BuildQuadTree(StRtree Tree, Dictionary<string, int> Countries, Coordinate TopLeft, Coordinate BottomRight, int MaxDepth, int Depth = 0)
+        private static int _nleafs;
+        private static QuadTree<byte> BuildQuadTree(StRtree Tree, Dictionary<string, byte> Countries, Coordinate TopLeft, Coordinate BottomRight, int MaxDepth, int Depth = 0)
         {
             // Bounding box for this node.
             var envelope = new Envelope(TopLeft, BottomRight);
@@ -110,8 +143,8 @@ namespace ShapeFileToQuadTree
                 var countryName = country != null ? country.Item1 : "";
 
                 Console.WriteLine("Adding {0}, Depth {1}, {2}x{3}", countryName, Depth, BottomRight.X - TopLeft.X, BottomRight.Y - TopLeft.Y);
-                ++nleafs;
-                return new QuadTreeLeaf<int>
+                ++_nleafs;
+                return new QuadTreeLeaf<byte>
                 {
                     Data = Countries[countryName],
                     TopLeft = TopLeft.ToGeomoirCoordinate(),
@@ -123,14 +156,14 @@ namespace ShapeFileToQuadTree
             // with this node, mark it as the country with the largest overlap.
             if (Depth >= MaxDepth)
             {
-                var label = 0;
+                byte label = 0;
                 // Take country with largest area intersecting.
                 var r = (from Tuple<string, IGeometry> t in results orderby t.Item2.Intersection(envelope.ToPolygon()).Area descending select t).First();
                 if (r.Item2.Intersection(envelope.ToPolygon()).Area > 0)
                     label = Countries[r.Item1];
 
-                ++nleafs;
-                return new QuadTreeLeaf<int>
+                ++_nleafs;
+                return new QuadTreeLeaf<byte>
                 {
                     Data = label,
                     TopLeft = TopLeft.ToGeomoirCoordinate(),
@@ -144,7 +177,7 @@ namespace ShapeFileToQuadTree
             var middleLeft = new Coordinate(TopLeft.X, (BottomRight.Y + TopLeft.Y) / 2);
             var middleRight = new Coordinate(BottomRight.X, (BottomRight.Y + TopLeft.Y) / 2);
             var middle = new Coordinate(middleTop.X, middleLeft.Y);
-            return new QuadTreeNode<int>
+            return new QuadTreeNode<byte>
             {
                 TopLeft = TopLeft.ToGeomoirCoordinate(),
                 BottomRight = BottomRight.ToGeomoirCoordinate(),
@@ -160,9 +193,9 @@ namespace ShapeFileToQuadTree
 
         // Loads a shapefile (*.shp), i.e. downloaded from http://www.naturalearthdata.com/,
         // adds each polygon to an R-tree, and adds each country name to a dictionary.
-        private static void ProcessShapeFile(string ShapeFilePath, out StRtree Tree, out Dictionary<string, int> Countries)
+        private static void ProcessShapeFile(string ShapeFilePath, out StRtree Tree, out Dictionary<string, byte> Countries)
         {
-            Countries = new Dictionary<string, int>();
+            Countries = new Dictionary<string, byte>();
             Countries.Add(string.Empty, 0);
 
             using (var p = Shapefile.OpenFile(ShapeFilePath))
@@ -173,9 +206,12 @@ namespace ShapeFileToQuadTree
                 {
                     var row = p.GetFeature(i);
                     var country = row.DataRow["name"].ToString();
-
+                    checked
+                    {
+                        
+                    }
                     if (!Countries.ContainsKey(country))
-                        Countries.Add(country, Countries.Count);
+                        Countries.Add(country, checked((byte)Countries.Count));
                     
                     var shape = row.ToShape();
                     var geometry = shape.ToGeometry();

@@ -4,7 +4,7 @@ namespace Geomoir.Data
 {
     // TODO: Very basic implementation, can probably be made much more efficient.
 
-    public abstract class QuadTree<T>
+    public abstract class QuadTree<T> 
     {
         public Coordinate TopLeft { get; set; }
         public Coordinate BottomRight { get; set; }
