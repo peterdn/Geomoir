@@ -134,6 +134,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\Data\countries.dat" />
+    <Content Include="Assets\Data\quadtree.dat" />
     <None Include="Keys.xaml.example" />
     <None Include="Geomoir_TemporaryKey.pfx" />
     <None Include="packages.config" />

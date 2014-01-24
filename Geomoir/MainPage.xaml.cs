@@ -1,17 +1,18 @@
 ﻿// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Data.Json;
-using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Bing.Maps;
 using Geomoir.Bluetooth;
+using Geomoir.Data;
 using SQLite;
 
 namespace Geomoir
@@ -27,6 +28,10 @@ namespace Geomoir
 
         private DuplexConnection _connection;
 
+        private QuadTree<byte> _quadtree;
+
+        private List<string> _countries;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -34,6 +39,7 @@ namespace Geomoir
             _bluetoothServer.StateChanged += BluetoothServerOnStateChanged;
             _bluetoothServer.ClientConnected += BluetoothServerOnClientConnected;
             _bluetoothServer.ConnectionError += BluetoothServerOnConnectionError;
+            LoadCountriesAndQuadTree();
         }
 
         private void BluetoothServerOnConnectionError(BluetoothServer Sender, Exception Args)
@@ -64,6 +70,7 @@ namespace Geomoir
                 for (int i = 0; i < count; ++i)
                 {
                     var location = await connection.ReceiveObject<Models.Location>();
+                    location.CountryId = _quadtree.Query(new Coordinate((float) location.Longitude, (float) location.Latitude));
                     db.Insert(location);
                 }
             }
@@ -136,7 +143,7 @@ namespace Geomoir
                 {
                     db.BeginTransaction();
                     var i1 = i;
-                    await Task.Run(() => AddLocationsToDatabase(db, locations, i1, count, step));
+                    await new Task(() => AddLocationsToDatabase(db, locations, i1, count, step));
                     db.Commit();
                     importProgressText.Text = string.Format("Imported {0} of {1}", i, locations.Count);
                     importProgressBar.Value += step * count;
@@ -145,6 +152,20 @@ namespace Geomoir
 
             importProgressBar.Visibility = Visibility.Collapsed;
             importProgressText.Text = "";
+        }
+
+        private async void LoadCountriesAndQuadTree()
+        {
+            // Load dictionary and quad tree for country lookup.
+            var countriesFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Data/countries.dat"));
+            var countriesStream = await countriesFile.OpenAsync(FileAccessMode.Read);
+            _countries = Countries.LoadCountryNames(new StreamReader(countriesStream.AsStream()));
+            countriesStream.Dispose();
+
+            var quadtreeFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Data/quadtree.dat"));
+            var quadtreeStream = await quadtreeFile.OpenAsync(FileAccessMode.Read);
+            _quadtree = Serializer.LoadQuadTree(new BinaryReader(quadtreeStream.AsStream()));
+            quadtreeStream.Dispose();
         }
 
         private void AddLocationsToDatabase(SQLiteConnection db, JsonArray locations, int start, int count, int step)
@@ -157,7 +178,16 @@ namespace Geomoir
                 var timestampMs = long.Parse(location["timestampMs"].GetString());
                 var accuracy = (int)location["accuracy"].GetNumber();
 
-                db.Insert(new Models.Location { Latitude = latitude, Longitude = longitude, Timestamp = timestampMs, Accuracy = accuracy });
+                var countryId = _quadtree.Query(new Coordinate((float)longitude, (float)latitude));
+
+                db.Insert(new Models.Location
+                {
+                    Latitude = latitude, 
+                    Longitude = longitude, 
+                    Timestamp = timestampMs, 
+                    Accuracy = accuracy,
+                    CountryId = countryId
+                });
             }
         }
 

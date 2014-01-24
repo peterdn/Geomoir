@@ -22,5 +22,8 @@ namespace Geomoir.Models
         
         [DataMember(IsRequired = true)]
         public int Accuracy { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public int CountryId { get; set; }
     }
 }
