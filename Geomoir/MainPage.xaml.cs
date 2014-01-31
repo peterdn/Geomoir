@@ -143,7 +143,7 @@ namespace Geomoir
                 {
                     db.BeginTransaction();
                     var i1 = i;
-                    await new Task(() => AddLocationsToDatabase(db, locations, i1, count, step));
+                    await Task.Run(() => AddLocationsToDatabase(db, locations, i1, count, step));
                     db.Commit();
                     importProgressText.Text = string.Format("Imported {0} of {1}", i, locations.Count);
                     importProgressBar.Value += step * count;
