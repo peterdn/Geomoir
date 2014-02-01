@@ -26,4 +26,10 @@ namespace Geomoir.Models
         [DataMember(IsRequired = true)]
         public int CountryId { get; set; }
     }
+
+
+    public class CountryIdResult
+    {
+        public int CountryId { get; set; }
+    }
 }
