@@ -9,15 +9,17 @@
     xmlns:bm="using:Bing.Maps" Loaded="Page_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <bm:Map Credentials="{StaticResource BingMapsApiKey}" x:Name="myMap" Margin="239,0,0,0"></bm:Map>
+        <bm:Map Credentials="{StaticResource BingMapsApiKey}" x:Name="myMap" Margin="239,0,0,255"></bm:Map>
         <ProgressBar x:Name="importProgressBar" HorizontalAlignment="Left" Height="32" Margin="498,48,0,0" VerticalAlignment="Top" Width="788" Visibility="Collapsed"/>
         <TextBlock x:Name="importProgressText" HorizontalAlignment="Left" Margin="239,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="32" Width="239" Foreground="Black" FontSize="18"/>
         <Button x:Name="ToggleServerButton" Content="Start Bluetooth server" HorizontalAlignment="Left" Margin="7,7,0,0" VerticalAlignment="Top" Click="ToggleServerButton_Click"/>
         <TextBlock x:Name="ServerStatusTextBlock" HorizontalAlignment="Left" Margin="10,129,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top" FontSize="36"/>
         <TextBlock x:Name="LogTextBlock" HorizontalAlignment="Left" Margin="10,177,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="224" FontSize="24"/>
         <Button x:Name="PlotLocationsButton" Content="Send Message" HorizontalAlignment="Left" Margin="7,45,0,0" VerticalAlignment="Top" Width="181" Click="PlotLocationsButton_Click"/>
+        <Button x:Name="GetLastCountryButton" Content="Get Last Country Visits" HorizontalAlignment="Left" Margin="7,723,0,0" VerticalAlignment="Top" Click="GetLastCountryButton_Click"/>
+        <StackPanel x:Name="CountriesStackPanel" HorizontalAlignment="Left" Height="240" Margin="239,518,0,0" VerticalAlignment="Top" Width="1117"/>
     </Grid>
-    
+
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton Name="ImportAppBarButton" Label="Import" Icon="Import" Click="ButtonBase_OnClick"></AppBarButton>

@@ -122,6 +122,7 @@
     <Compile Include="Bluetooth\BluetoothServer.cs" />
     <Compile Include="Bluetooth\ClientConnectedEventArgs.cs" />
     <Compile Include="Bluetooth\Exceptions.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

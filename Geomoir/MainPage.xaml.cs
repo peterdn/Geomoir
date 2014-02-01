@@ -1,5 +1,4 @@
-﻿// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,8 +7,11 @@ using Windows.ApplicationModel.Core;
 using Windows.Data.Json;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Bing.Maps;
 using Geomoir.Bluetooth;
 using Geomoir.Data;
@@ -168,11 +170,11 @@ namespace Geomoir
             quadtreeStream.Dispose();
         }
 
-        private void AddLocationsToDatabase(SQLiteConnection db, JsonArray locations, int start, int count, int step)
+        private void AddLocationsToDatabase(SQLiteConnection Connection, JsonArray Locations, int Start, int Count, int Step)
         {
-            for (var i = start; i < start + count && i < locations.Count; i += step)
+            for (var i = Start; i < Start + Count && i < Locations.Count; i += Step)
             {
-                var location = locations[i].GetObject();
+                var location = Locations[i].GetObject();
                 var latitude = location["latitudeE7"].GetNumber() / 1e7;
                 var longitude = location["longitudeE7"].GetNumber() / 1e7;
                 var timestampMs = long.Parse(location["timestampMs"].GetString());
@@ -180,7 +182,7 @@ namespace Geomoir
 
                 var countryId = _quadtree.Query(new Coordinate((float)longitude, (float)latitude));
 
-                db.Insert(new Models.Location
+                Connection.Insert(new Models.Location
                 {
                     Latitude = latitude, 
                     Longitude = longitude, 
@@ -191,12 +193,12 @@ namespace Geomoir
             }
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object Sender, RoutedEventArgs Args)
         {
             
         }
 
-        private async void ToggleServerButton_Click(object sender, RoutedEventArgs e)
+        private async void ToggleServerButton_Click(object Sender, RoutedEventArgs Args)
         {
             if (_bluetoothServer.ServerState == BluetoothServer.BluetoothServerState.Connected || _bluetoothServer.ServerState == BluetoothServer.BluetoothServerState.Advertising)
             {
@@ -238,6 +240,40 @@ namespace Geomoir
 
                 myMap.SetView(location, 10);
             }
+        }
+
+        private Dictionary<string, DateTime> GetLastVisitedCountries()
+        {
+            var ret = new Dictionary<string, DateTime>();
+
+            var app = (App)Application.Current;
+            var db = new SQLiteConnection(app.DatabasePath);
+            var countries = db.Query<Ref<int, long>>("SELECT CountryId AS 'Value1', MAX(Timestamp) AS 'Value2' FROM Location GROUP BY CountryId").OrderBy(Location => -Location.Value2);
+
+            foreach (var country in countries)
+            {
+                var countryName = _countries[country.Value1];
+                var lastVisited = country.Value2.FromUnixTimestampMS();
+                ret.Add(countryName, lastVisited);
+            }
+
+            return ret;
+        }
+
+        private async void GetLastCountryButton_Click(object Sender, RoutedEventArgs Args)
+        {
+            var countries = await Task.Run(() => GetLastVisitedCountries());
+
+            SafeInvoke(() => {
+                foreach (var country in countries)
+                {
+                    var textBlock = new TextBlock();
+                    textBlock.Text = string.Format("{0} -- {1}", country.Value, country.Key);
+                    textBlock.FontSize = 16;
+                    textBlock.Foreground = new SolidColorBrush(Colors.Red);
+                    CountriesStackPanel.Children.Add(textBlock);
+                }
+            });
         }
     }
 }
