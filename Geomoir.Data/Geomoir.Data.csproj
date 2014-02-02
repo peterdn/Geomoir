@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Coordinate.cs" />
     <Compile Include="Countries.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ref.cs" />

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geomoir", "Geomoir\Geomoir.csproj", "{9C9F0255-5C12-4ADA-96BA-5E1AC834E79D}"
 EndProject
@@ -12,6 +12,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geomoir.Data", "Geomoir.Data\Geomoir.Data.csproj", "{2E72F876-41B4-49A1-8BCE-630A911AC04D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFileToQuadTree", "ShapeFileToQuadTree\ShapeFileToQuadTree.csproj", "{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geomoir Tracker Agent", "Geomoir Tracker Agent\Geomoir Tracker Agent.csproj", "{3C7D0931-5C18-4587-8F87-573B1398EEFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geomoir Tracker Lib", "Geomoir Tracker Lib\Geomoir Tracker Lib.csproj", "{E89C8486-4D84-4D0D-A674-2A414897077A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +157,50 @@ Global
 		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|Win32.ActiveCfg = Release|Any CPU
 		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|x64.ActiveCfg = Release|Any CPU
 		{29B1BAD3-AE5F-4E68-B71C-F4E362339D99}.Release|x86.ActiveCfg = Release|Any CPU
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|ARM.ActiveCfg = Debug|ARM
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|ARM.Build.0 = Debug|ARM
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|Win32.ActiveCfg = Debug|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|Win32.Build.0 = Debug|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|x86.ActiveCfg = Debug|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Debug|x86.Build.0 = Debug|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|ARM.ActiveCfg = Release|ARM
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|ARM.Build.0 = Release|ARM
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|Mixed Platforms.Build.0 = Release|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|Win32.ActiveCfg = Release|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|Win32.Build.0 = Release|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|x86.ActiveCfg = Release|x86
+		{3C7D0931-5C18-4587-8F87-573B1398EEFF}.Release|x86.Build.0 = Release|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|ARM.ActiveCfg = Debug|ARM
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|ARM.Build.0 = Debug|ARM
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|Win32.ActiveCfg = Debug|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|Win32.Build.0 = Debug|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|x86.ActiveCfg = Debug|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Debug|x86.Build.0 = Debug|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|ARM.ActiveCfg = Release|ARM
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|ARM.Build.0 = Release|ARM
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|Win32.ActiveCfg = Release|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|Win32.Build.0 = Release|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|x64.ActiveCfg = Release|Any CPU
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|x86.ActiveCfg = Release|x86
+		{E89C8486-4D84-4D0D-A674-2A414897077A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

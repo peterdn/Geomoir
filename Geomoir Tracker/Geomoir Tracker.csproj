@@ -99,14 +99,10 @@
     <Compile Include="..\Geomoir\Bluetooth\DuplexConnection.cs">
       <Link>Bluetooth\DuplexConnection.cs</Link>
     </Compile>
-    <Compile Include="..\Geomoir\Models\Location.cs">
-      <Link>Models\Location.cs</Link>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bluetooth\BluetoothClient.cs" />
-    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -117,8 +113,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SQLite.cs" />
-    <Compile Include="SQLiteAsync.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -157,6 +151,12 @@
     <Content Include="Assets\Tiles\IconicTileSmall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="README_FIRST.txt" />
+    <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">
@@ -168,10 +168,23 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SQLite WP8\Sqlite.vcxproj">
-      <Project>{59B35F6C-E062-4F0E-88D8-13F3F82A24F3}</Project>
-      <Name>SQLite WP8</Name>
+    <ProjectReference Include="..\Geomoir Tracker Agent\Geomoir Tracker Agent.csproj">
+      <Project>{3C7D0931-5C18-4587-8F87-573B1398EEFF}</Project>
+      <Name>Geomoir Tracker Agent</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Geomoir Tracker Lib\Geomoir Tracker Lib.csproj">
+      <Project>{E89C8486-4D84-4D0D-A674-2A414897077A}</Project>
+      <Name>Geomoir Tracker Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Geomoir.Data\Geomoir.Data.csproj">
+      <Project>{2E72F876-41B4-49A1-8BCE-630A911AC04D}</Project>
+      <Name>Geomoir.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Phone.Controls.Toolkit">
+      <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

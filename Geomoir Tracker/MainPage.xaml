@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -45,12 +46,17 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Button x:Name="addLocationButton" Content="Add current location to SQLite" HorizontalAlignment="Left" VerticalAlignment="Top" Click="AddLocationButton_Click"/>
-            <Button x:Name="readLocationsButton" Content="Read locations from SQLite" HorizontalAlignment="Left" Margin="0,72,0,0" VerticalAlignment="Top" Click="readLocationsButton_Click"/>
-            <Button x:Name="syncBluetoothButton" Content="Sync over bluetooth" HorizontalAlignment="Left" Margin="0,149,0,0" VerticalAlignment="Top" Click="SyncBluetoothButton_Click"/>
-            <TextBlock x:Name="databasePathTextBlock" HorizontalAlignment="Left" Margin="10,226,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        </Grid>
+        <StackPanel x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <StackPanel>
+                <tk:ToggleSwitch x:Name="TrackingButton" Header="Location tracking" Content="Off" IsChecked="{Binding IsEnabled}" Checked="TrackingButton_Checked" Unchecked="TrackingButton_Unchecked" VerticalContentAlignment="Top" />
+                <Button x:Name="SyncBluetoothButton" Content="Sync over bluetooth" HorizontalAlignment="Left" VerticalAlignment="Top" Click="SyncBluetoothButton_Click"/>
+            </StackPanel>
+            <ScrollViewer HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top">
+                <StackPanel Name="LocationPanel">
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are
             aligned on common boundaries.  The image has a top margin of -32px to

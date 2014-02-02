@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
 using Geomoir.Models;
+using Geomoir_Tracker_Lib;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Geomoir_Tracker.Resources;
@@ -20,15 +21,7 @@ namespace Geomoir_Tracker
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
-
-        public string DatabasePath
-        {
-            get
-            {
-                return Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "locations.db");
-            }
-        }
-
+        
         /// <summary>
         /// Constructor for the Application object.
         /// </summary>
@@ -73,7 +66,7 @@ namespace Geomoir_Tracker
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             // Create SQLite database if it does not already exist
-            using (var db = new SQLiteConnection(DatabasePath))
+            using (var db = new SQLiteConnection(Database.DatabasePath))
             {
                 db.CreateTable<Location>();
             }

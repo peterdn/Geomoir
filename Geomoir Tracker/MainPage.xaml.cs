@@ -1,59 +1,116 @@
 ﻿using System;
-using System.Device.Location;
 using System.Linq;
 using System.Windows;
-using System.Windows.Navigation;
-using Windows.Devices.Geolocation;
+using System.Windows.Controls;
 using Geomoir.Bluetooth;
+using Geomoir.Data;
 using Geomoir.Models;
+using Geomoir_Tracker_Lib;
+using Microsoft.Phone.Scheduler;
 using SQLite;
 
 namespace Geomoir_Tracker
 {
     public partial class MainPage
     {
+        private PeriodicTask _trackingTask;
+
+        private const string _TRACKING_TASK_NAME = "TrackingAgent";
+
+        private bool _initialized;
+
+        private bool TrackingEnabled
+        {
+            set
+            {
+                // TODO: change this to data binding
+                TrackingButton.Content = value ? "On" : "Off";
+            }
+        }
+        
         // Constructor
         public MainPage()
         {
             InitializeComponent();
-            
-            var app = (App)Application.Current;
-
-            databasePathTextBlock.Text = app.DatabasePath;
         }
 
-        private async void AddLocationButton_Click(object Sender, RoutedEventArgs Args)
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs Args)
         {
-            var app = (App)Application.Current;
+            ReadLocations();
 
-            var geolocater = new Geolocator();
+            _trackingTask = ScheduledActionService.Find(_TRACKING_TASK_NAME) as PeriodicTask;
 
-            var geoposition = await geolocater.GetGeopositionAsync();
-
-            var location = new Location();
-            location.Latitude = geoposition.Coordinate.Latitude;
-            location.Longitude = geoposition.Coordinate.Longitude;
-
-            location.Timestamp = DateTime.Now.ToUnixTimestampMS();
-
-            // TODO: check accuracies here mean the same thing
-            location.Accuracy = (int)geoposition.Coordinate.Accuracy;
-
-            using (var db = new SQLiteConnection(app.DatabasePath))
+            if (_trackingTask != null)
             {
-                db.Insert(location);
+                TrackingButton.DataContext = _trackingTask;
+                TrackingEnabled = _trackingTask.IsEnabled;
+            }
+            else
+            {
+                TrackingEnabled = false;
+            }
+
+            _initialized = true;
+        }
+
+        private void ReadLocations()
+        {
+            Location[] results;
+
+            using (var db = new SQLiteConnection(Database.DatabasePath))
+            {
+                results = db.Table<Location>().OrderByDescending(x => x.Timestamp).Take(20).ToArray();
+            }
+
+            foreach (var location in results)
+            {
+                var textBlock = new TextBlock();
+                textBlock.Text = string.Format("{0}: {1}, {2}", 
+                    location.Timestamp.FromUnixTimestampMS(), 
+                    Math.Round(location.Latitude, 3), Math.Round(location.Longitude, 3));
+                LocationPanel.Children.Add(textBlock);
             }
         }
 
-        private void readLocationsButton_Click(object Sender, RoutedEventArgs Args)
+        private void StartTracking()
         {
-            var app = (App)Application.Current;
+            _trackingTask = ScheduledActionService.Find(_TRACKING_TASK_NAME) as PeriodicTask;
 
-            using (var db = new SQLiteConnection(app.DatabasePath))
+            if (_trackingTask != null)
+                StopTracking();
+
+            _trackingTask = new PeriodicTask(_TRACKING_TASK_NAME);
+
+            _trackingTask.Description = "Tracks location";
+
+            try
             {
-                var query = db.Table<Location>().OrderBy(x => x.Timestamp).ToArray();
+                ScheduledActionService.Add(_trackingTask);
 
-                databasePathTextBlock.Text = string.Format("Got {0} locations!", query.Length);
+#if DEBUG
+                ScheduledActionService.LaunchForTest(_TRACKING_TASK_NAME, TimeSpan.FromSeconds(60));
+#endif
+
+                TrackingEnabled = true;
+            } 
+            catch (Exception ex)
+            {
+                TrackingButton.IsChecked = false;
+                TrackingEnabled = false;
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void StopTracking()
+        {
+            try
+            {
+                ScheduledActionService.Remove(_TRACKING_TASK_NAME);
+                TrackingEnabled = false;
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -66,10 +123,9 @@ namespace Geomoir_Tracker
 
         private async void ClientOnConnectionEstablished(BluetoothClient Client, ClientConnectedEventArgs Args)
         {
-            var app = (App)Application.Current;
             var connection = Args.Connection;
 
-            using (var db = new SQLiteConnection(app.DatabasePath))
+            using (var db = new SQLiteConnection(Database.DatabasePath))
             {
                 var query = db.Table<Location>().OrderBy(x => x.Timestamp).ToArray();
 
@@ -83,6 +139,18 @@ namespace Geomoir_Tracker
             }
 
             // Disconnect
+        }
+
+        private void TrackingButton_Checked(object Sender, RoutedEventArgs Args)
+        {
+            if (_initialized)
+                StartTracking();
+        }
+
+        private void TrackingButton_Unchecked(object Sender, RoutedEventArgs Args)
+        {
+            if (_initialized)
+                StopTracking();
         }
     }
 }
