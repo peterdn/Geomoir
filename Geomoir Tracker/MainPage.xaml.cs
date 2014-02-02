@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Device.Location;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Geomoir.Bluetooth;
 using Geomoir.Data;
 using Geomoir.Models;
 using Geomoir_Tracker_Lib;
+using Microsoft.Phone.Maps.Controls;
 using Microsoft.Phone.Scheduler;
 using SQLite;
 
@@ -34,9 +37,17 @@ namespace Geomoir_Tracker
             InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs Args)
+        protected override async void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs Args)
         {
-            ReadLocations();
+            _initialized = false;
+            
+            var location = await GetLastLocation();
+
+            if (location != null)
+            {
+                var geocoordinate = new GeoCoordinate(location.Latitude, location.Longitude);
+                Map.SetView(geocoordinate, 18, MapAnimationKind.Linear);
+            }
 
             _trackingTask = ScheduledActionService.Find(_TRACKING_TASK_NAME) as PeriodicTask;
 
@@ -53,22 +64,11 @@ namespace Geomoir_Tracker
             _initialized = true;
         }
 
-        private void ReadLocations()
+        private async Task<Location> GetLastLocation()
         {
-            Location[] results;
-
             using (var db = new SQLiteConnection(Database.DatabasePath))
             {
-                results = db.Table<Location>().OrderByDescending(x => x.Timestamp).Take(20).ToArray();
-            }
-
-            foreach (var location in results)
-            {
-                var textBlock = new TextBlock();
-                textBlock.Text = string.Format("{0}: {1}, {2}", 
-                    location.Timestamp.FromUnixTimestampMS(), 
-                    Math.Round(location.Latitude, 3), Math.Round(location.Longitude, 3));
-                LocationPanel.Children.Add(textBlock);
+                return db.Table<Location>().OrderByDescending(x => x.Timestamp).FirstOrDefault();
             }
         }
 
